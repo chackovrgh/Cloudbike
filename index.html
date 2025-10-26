@@ -3,74 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bike Rental System</title>
+    <title>Bike Rental System | CloudBikes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // Set up custom Tailwind configuration
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                     },
-                }
-            }
+                    colors: {
+                        'primary-blue': '#1e40af', // Darker blue for accents
+                        'primary-indigo': '#4f46e5', // Indigo for admin/buttons
+                        'dark-bg': '#1f2937', // Dark gray for background
+                    }
+                },
+            },
+            // Enable custom classes in the style block
+            corePlugins: {
+                preflight: false,
+            },
         }
     </script>
     <style>
+        /* Custom Styles and Background Image */
         body {
             font-family: 'Inter', sans-serif;
+            /* Using a dark color as a fallback */
+            background-color: #1f2937; 
+            /* Replace 'your-bike-background.jpg' with an actual path/URL to a high-quality bike image */
+            background-image: url('https://images.unsplash.com/photo-1579624536768-b8077c59a72f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Overlay for readability */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.65); /* Dark semi-transparent overlay */
+            z-index: -1;
+        }
+
+        /* Card styles for lift and shadow */
+        .card-lift {
+            transition: all 0.3s ease;
+        }
+        .card-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Custom scrollbar for better look (Webkit browsers) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="min-h-screen">
+    <div class="background-overlay"></div>
 
-    <div class="container mx-auto max-w-4xl p-4 sm:p-8">
+    <div class="container mx-auto max-w-4xl p-4 sm:p-8 relative z-10">
         
-        <header class="mb-8">
-            <h1 class="text-4xl font-bold text-center text-blue-600">Bike Rental Portal</h1>
-            <p class="text-center text-gray-500 mt-2">Powered by Firebase & Deployed on Azure</p>
+        <header class="mb-10 text-white">
+            <h1 class="text-5xl font-extrabold text-center text-primary-blue drop-shadow-lg tracking-wider">CloudBikes</h1>
+            <p class="text-center text-gray-300 mt-2 font-light">Your high-speed journey starts now.</p>
         </header>
 
         <div id="login-register-view" class="max-w-md mx-auto">
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="bg-white p-8 rounded-xl shadow-2xl card-lift">
                 
                 <form id="login-form">
-                    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
-                    <div id="auth-error" class="hidden text-red-600 bg-red-100 p-3 rounded-md mb-4 text-sm"></div>
-                    <div class="space-y-4">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Rider Login</h2>
+                    <div id="auth-error" class="hidden text-red-700 bg-red-100 p-3 rounded-lg mb-4 text-sm font-medium border border-red-300"></div>
+                    <div class="space-y-6">
                         <div>
-                            <label for="login-email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" id="login-email" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <input type="email" id="login-email" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out" required>
                         </div>
                         <div>
                             <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
-                            <input type="password" id="login-password" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <input type="password" id="login-password" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out" required>
                         </div>
-                        <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">Login</button>
+                        <button type="submit" class="w-full bg-primary-blue text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold text-lg transition duration-150 ease-in-out shadow-md hover:shadow-lg">Login to Ride</button>
                     </div>
-                    <p class="text-center text-sm text-gray-600 mt-4">
-                        Don't have an account? 
-                        <a href="#" id="show-register-form" class="font-medium text-blue-600 hover:text-blue-500">Register here</a>
+                    <p class="text-center text-sm text-gray-600 mt-6">
+                        New here? 
+                        <a href="#" id="show-register-form" class="font-bold text-primary-blue hover:text-blue-500 transition duration-150 ease-in-out">Create your account</a>
                     </p>
                 </form>
 
                 <form id="register-form" class="hidden">
-                    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Register</h2>
-                    <div id="register-error" class="hidden text-red-600 bg-red-100 p-3 rounded-md mb-4 text-sm"></div>
-                    <div class="space-y-4">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Join CloudBikes</h2>
+                    <div id="register-error" class="hidden text-red-700 bg-red-100 p-3 rounded-lg mb-4 text-sm font-medium border border-red-300"></div>
+                    <div class="space-y-6">
                         <div>
-                            <label for="register-email" class="block text-sm font-medium text-gray-700">Email</label>
-                            <input type="email" id="register-email" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <label for="register-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <input type="email" id="register-email" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out" required>
                         </div>
                         <div>
-                            <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
-                            <input type="password" id="register-password" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <label for="register-password" class="block text-sm font-medium text-gray-700">Secure Password</label>
+                            <input type="password" id="register-password" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out" required>
                         </div>
-                        <button type="submit" class="w-full bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 font-medium">Create Account</button>
+                        <button type="submit" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 font-semibold text-lg transition duration-150 ease-in-out shadow-md hover:shadow-lg">Create Account</button>
                     </div>
-                     <p class="text-center text-sm text-gray-600 mt-4">
-                        Already have an account? 
-                        <a href="#" id="show-login-form" class="font-medium text-blue-600 hover:text-blue-500">Login here</a>
+                    <p class="text-center text-sm text-gray-600 mt-6">
+                        Already a member? 
+                        <a href="#" id="show-login-form" class="font-bold text-primary-blue hover:text-blue-500 transition duration-150 ease-in-out">Login here</a>
                     </p>
                 </form>
 
@@ -78,56 +129,56 @@
         </div>
 
         <div id="app-content" class="hidden">
-            <div id="user-info" class="text-center mb-6 p-4 bg-white rounded-lg shadow-sm">
+            <div id="user-info" class="text-center mb-8 p-6 bg-white rounded-xl shadow-lg border-t-4 border-primary-blue">
                 <div class="flex justify-between items-center">
                     <div>
-                        <p id="auth-status" class="text-lg text-green-600 font-medium">Backend Connected</p>
-                        <p id="user-role" class="text-sm text-indigo-600 font-semibold"></p>
+                        <p id="auth-status" class="text-lg text-green-700 font-semibold"></p>
+                        <p id="user-role" class="text-sm text-primary-indigo font-bold mt-1"></p>
                     </div>
-                    <button id="sign-out-btn" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 font-medium text-sm">Sign Out</button>
+                    <button id="sign-out-btn" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 font-medium text-base transition duration-150 ease-in-out shadow-md">Sign Out</button>
                 </div>
-                 <p id="user-id" class="text-xs text-gray-400 break-all mt-2 text-left"></p>
+                <p id="user-id" class="text-xs text-gray-400 break-all mt-3 text-left border-t pt-2"></p>
             </div>
 
-            <div id="loading-view" class="text-center p-10 bg-white rounded-lg shadow">
-                <svg class="animate-spin h-10 w-10 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <div id="loading-view" class="text-center p-10 bg-white rounded-xl shadow-lg">
+                <svg class="animate-spin h-10 w-10 text-primary-blue mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <p class="mt-3 text-gray-500">Checking user role...</p>
+                <p class="mt-3 text-gray-600 font-medium">Checking user role...</p>
             </div>
 
             <div id="customer-view" class="hidden space-y-8">
                 
-                <section class="bg-white p-6 rounded-lg shadow">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Rent a Bike</h2>
-                    <form id="rental-form" class="space-y-4">
+                <section class="bg-white p-6 rounded-xl shadow-lg card-lift">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Rent a Bike 🏍️</h2>
+                    <form id="rental-form" class="space-y-5">
                         <div>
-                            <label for="bike-select" class="block text-sm font-medium text-gray-700">Bike Model</label>
-                            <select id="bike-select" name="bike-select" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <label for="bike-select" class="block text-sm font-medium text-gray-700">Available Bike Models</label>
+                            <select id="bike-select" name="bike-select" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm bg-white focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out" required>
                                 <option value="">Select a bike...</option>
-                                </select>
+                            </select>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="rental-start-date" class="block text-sm font-medium text-gray-700">Start Date</label>
-                                <input type="date" id="rental-start-date" name="rental-start-date" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                <input type="date" id="rental-start-date" name="rental-start-date" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out" required>
                             </div>
                             <div>
                                 <label for="rental-end-date" class="block text-sm font-medium text-gray-700">End Date</label>
-                                <input type="date" id="rental-end-date" name="rental-end-date" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                <input type="date" id="rental-end-date" name="rental-end-date" class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out" required>
                             </div>
                         </div>
                         
-                        <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">Request Rental</button>
+                        <button type="submit" class="w-full bg-primary-blue text-white px-6 py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-semibold text-lg transition duration-150 ease-in-out shadow-md">Request Rental</button>
                     </form>
                 </section>
 
-                <section class="bg-white p-6 rounded-lg shadow">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">My Rentals</h2>
-                    <ul id="my-rentals-list" class="space-y-3">
-                        <li id="my-rentals-empty" class="text-center text-gray-500 py-4">You have no active rentals.</li>
+                <section class="bg-white p-6 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">My Current Rentals 📅</h2>
+                    <ul id="my-rentals-list" class="space-y-4">
+                        <li id="my-rentals-empty" class="text-center text-gray-500 py-4 font-medium">You have no active or pending rentals.</li>
                     </ul>
                 </section>
 
@@ -135,24 +186,24 @@
 
             <div id="admin-view" class="hidden space-y-8">
 
-                <section class="bg-white p-6 rounded-lg shadow">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Manage Bike Inventory</h2>
-                    <form id="add-bike-form" class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 mb-6">
-                        <input type="text" id="bike-model" class="flex-grow border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Bike Model (e.g., Honda Activa)" required>
-                        <input type="number" id="bike-rate" class="flex-grow border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Rental Rate (₹/Day)" required>
-                        <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">Add Bike</button>
+                <section class="bg-white p-6 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Manage Bike Inventory 🛠️</h2>
+                    <form id="add-bike-form" class="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0 mb-8">
+                        <input type="text" id="bike-model" class="flex-grow border border-gray-300 rounded-lg p-3 focus:ring-primary-indigo focus:border-primary-indigo transition duration-150 ease-in-out" placeholder="Bike Model (e.g., Honda Activa)" required>
+                        <input type="number" id="bike-rate" class="w-full sm:w-1/3 border border-gray-300 rounded-lg p-3 focus:ring-primary-indigo focus:border-primary-indigo transition duration-150 ease-in-out" placeholder="Rate (₹/Day)" required>
+                        <button type="submit" class="w-full sm:w-1/4 bg-primary-indigo text-white px-6 py-3 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 font-medium shadow-md">Add Bike</button>
                     </form>
                     
-                    <h3 class="text-xl font-semibold text-gray-700 mb-3">Current Bikes</h3>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Current Fleet</h3>
                     <ul id="admin-bike-list" class="space-y-3">
-                        <li id="admin-bikes-empty" class="text-center text-gray-500 py-4">No bikes found. Add one above.</li>
+                        <li id="admin-bikes-empty" class="text-center text-gray-500 py-4 font-medium">No bikes found. Add one above.</li>
                     </ul>
                 </section>
 
-                <section class="bg-white p-6 rounded-lg shadow">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">All Rental Requests</h2>
-                    <ul id="all-rentals-list" class="space-y-3">
-                        <li id="all-rentals-empty" class="text-center text-gray-500 py-4">There are no rental requests.</li>
+                <section class="bg-white p-6 rounded-xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">All Rental Requests 📋</h2>
+                    <ul id="all-rentals-list" class="space-y-4">
+                        <li id="all-rentals-empty" class="text-center text-gray-500 py-4 font-medium">There are no rental requests.</li>
                     </ul>
                 </section>
 
@@ -161,21 +212,16 @@
     </div>
 
     <script>
-        // Copy this from your Firebase project settings
-        // IMPORTANT: REPLACE with your ACTUAL Firebase config
         const firebaseConfig = {
-  apiKey: "AIzaSyCzg_7yjmg956Dnd_ZaXsv7YRW8qdzLIjA",
-  authDomain: "cloudbike-7b44b.firebaseapp.com",
-  projectId: "cloudbike-7b44b",
-  storageBucket: "cloudbike-7b44b.firebasestorage.app",
-  messagingSenderId: "496112498753",
-  appId: "1:496112498753:web:8251f1b4c8e81924e4eec0",
-  measurementId: "G-PR3S4LG81J"
-};
-
+            apiKey: "AIzaSyCzg_7yjmg956Dnd_ZaXsv7YRW8qdzLIjA",
+            authDomain: "cloudbike-7b44b.firebaseapp.com",
+            projectId: "cloudbike-7b44b",
+            storageBucket: "cloudbike-7b44b.firebasestorage.app",
+            messagingSenderId: "496112498753",
+            appId: "1:496112498753:web:8251f1b4c8e81924e4eec0",
+            measurementId: "G-PR3S4LG81J"
+        };
     </script>
-
-
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -215,11 +261,10 @@
         const userIdEl = document.getElementById('user-id');
         const userRoleEl = document.getElementById('user-role');
         const loadingView = document.getElementById('loading-view');
-        // Renamed from patientView
         const customerView = document.getElementById('customer-view'); 
         const adminView = document.getElementById('admin-view');
 
-        // Customer View Elements (Renamed)
+        // Customer View Elements
         const rentalForm = document.getElementById('rental-form');
         const bikeSelect = document.getElementById('bike-select');
         const rentalStartDate = document.getElementById('rental-start-date');
@@ -227,7 +272,7 @@
         const myRentalsList = document.getElementById('my-rentals-list');
         const myRentalsEmpty = document.getElementById('my-rentals-empty');
 
-        // Admin View Elements (Renamed)
+        // Admin View Elements
         const addBikeForm = document.getElementById('add-bike-form');
         const bikeModelInput = document.getElementById('bike-model');
         const bikeRateInput = document.getElementById('bike-rate');
@@ -239,9 +284,9 @@
         // --- FIREBASE & APP STATE ---
         let app, auth, db;
         let userId;
-        let userRole = 'customer'; // Default role (renamed from 'patient')
-        let unsubscribeBikes = null; // Renamed from 'unsubscribeDoctors'
-        let unsubscribeRentals = null; // Renamed from 'unsubscribeAppointments'
+        let userRole = 'customer'; 
+        let unsubscribeBikes = null; 
+        let unsubscribeRentals = null; 
 
         // --- FIREBASE INITIALIZATION & AUTH ---
 
@@ -271,7 +316,7 @@
                         loginRegisterView.classList.add('hidden');
                         appContent.classList.remove('hidden');
                         loadingView.classList.remove('hidden'); // Show loader while checking role
-                        customerView.classList.add('hidden'); // Use new ID
+                        customerView.classList.add('hidden'); 
                         adminView.classList.add('hidden');
 
                         authStatusEl.textContent = 'Backend Connected';
@@ -301,8 +346,8 @@
 
             } catch (error) {
                 console.error("Firebase Initialization Error:", error);
-                authErrorEl.textContent = 'Error connecting to backend. Check console.';
-                authErrorEl.classList.remove('hidden');
+                authStatusEl.textContent = 'Error connecting to backend. Check console.';
+                authStatusEl.classList.add('text-red-600');
             }
         }
 
@@ -339,7 +384,7 @@
                 // 2. Create their role document in Firestore
                 // New users default to 'customer'
                 const userDocRef = doc(db, "users", user.uid);
-                await setDoc(userDocRef, { role: 'customer' }); // Changed from 'patient'
+                await setDoc(userDocRef, { role: 'customer' }); 
                 
                 // onAuthStateChanged will handle the rest
             } catch (error) {
@@ -376,12 +421,14 @@
             e.preventDefault();
             loginForm.classList.add('hidden');
             registerForm.classList.remove('hidden');
+            authErrorEl.classList.add('hidden');
         });
 
         showLoginFormBtn.addEventListener('click', (e) => {
             e.preventDefault();
             registerForm.classList.add('hidden');
             loginForm.classList.remove('hidden');
+            registerErrorEl.classList.add('hidden');
         });
 
 
@@ -396,10 +443,10 @@
                     userRole = 'admin';
                     console.log("User role is: ADMIN");
                 } else {
-                    userRole = 'customer'; // Changed from 'patient'
+                    userRole = 'customer'; 
                     console.log("User role is: CUSTOMER");
                 }
-                userRoleEl.textContent = `You are logged in as: ${userRole.toUpperCase()}`;
+                userRoleEl.textContent = `Role: ${userRole.toUpperCase()}`;
             } catch (error) {
                 console.error("Error checking user role:", error);
                 userRole = 'customer'; // Default to customer on error
@@ -420,7 +467,7 @@
                 listenForAllRentals();
 
             } else {
-                // Customer Setup (Renamed from Patient Setup)
+                // Customer Setup
                 customerView.classList.remove('hidden');
                 adminView.classList.add('hidden');
                 
@@ -435,13 +482,10 @@
         }
 
         // --- BIKE INVENTORY MANAGEMENT (Admin & Customer) ---
-        // (Replaced Doctor logic)
 
         function listenForBikes(isAdmin) {
-            // Collection name changed to 'bikes'
             const bikesCollection = collection(db, "bikes");
             
-            // Renamed unsubscribe variable
             unsubscribeBikes = onSnapshot(bikesCollection, (snapshot) => {
                 const bikes = [];
                 snapshot.forEach(doc => bikes.push({ id: doc.id, ...doc.data() }));
@@ -467,20 +511,17 @@
             adminBikesEmpty.classList.add('hidden');
             bikes.forEach(bike => {
                 const li = document.createElement('li');
-                li.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-md';
+                li.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm';
                 li.innerHTML = `
                     <div>
-                        <span class="font-medium text-gray-900">${bike.model}</span>
-                        <span class="text-sm text-gray-600 ml-2">(₹${bike.rate}/Day)</span>
+                        <span class="font-semibold text-gray-900">${bike.model}</span>
+                        <span class="text-sm text-primary-indigo ml-2 font-medium">(₹${bike.rate}/Day)</span>
                     </div>
-                    <button data-id="${bike.id}" class="remove-bike-btn bg-red-100 text-red-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-red-200">Remove</button>
+                    <button data-id="${bike.id}" class="remove-bike-btn bg-red-500 text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-red-600 transition duration-150 ease-in-out">Remove</button>
                 `;
                 adminBikeList.appendChild(li);
             });
-            // Attach event listener for removing bike
-            adminBikeList.querySelectorAll('.remove-bike-btn').forEach(button => {
-                button.addEventListener('click', removeBike);
-            });
+            // Event listener for removing bike is delegated below
         }
 
         // (Customer) Render bike <option> tags for the select dropdown
@@ -504,7 +545,6 @@
 
             if (model && !isNaN(rate) && rate > 0) {
                 try {
-                    // Collection name changed to 'bikes'
                     await addDoc(collection(db, "bikes"), { model, rate, available: true });
                     bikeModelInput.value = '';
                     bikeRateInput.value = '';
@@ -512,18 +552,15 @@
                     console.error("Error adding bike:", error);
                 }
             } else {
-                alert("Please enter a valid model and rental rate.");
+                alert("Please enter a valid bike model and a positive rental rate.");
             }
         }
 
         // (Admin) Remove a bike
         async function removeBike(e) {
-            if (!e.target.classList.contains('remove-bike-btn')) return;
-            
             const id = e.target.dataset.id;
             if (confirm("Are you sure you want to remove this bike from inventory?")) {
                 try {
-                    // Collection name changed to 'bikes'
                     await deleteDoc(doc(db, "bikes", id));
                 } catch (error) {
                     console.error("Error removing bike:", error);
@@ -532,7 +569,6 @@
         }
 
         // --- RENTAL MANAGEMENT ---
-        // (Replaced Appointment logic)
 
         // (Customer) Request a new rental
         async function requestRental(e) {
@@ -545,26 +581,29 @@
             }
 
             const rental = {
-                customerId: userId, // Changed from patientId
+                customerId: userId, 
                 bikeId: selectedOption.value,
                 bikeModel: selectedOption.dataset.model,
-                rentalRate: parseFloat(selectedOption.dataset.rate), // Store rate
+                rentalRate: parseFloat(selectedOption.dataset.rate), 
                 startDate: rentalStartDate.value,
                 endDate: rentalEndDate.value,
-                status: 'Requested' // Changed from 'Pending'
+                status: 'Requested' 
             };
 
             // Basic Date Validation
-            if (rental.startDate >= rental.endDate) {
+            if (new Date(rental.startDate) >= new Date(rental.endDate)) {
                 alert("End date must be after start date.");
+                return;
+            }
+            if (new Date(rental.startDate) < new Date().setHours(0,0,0,0)) {
+                alert("Start date cannot be in the past.");
                 return;
             }
 
             try {
-                // Collection name changed to 'rentals'
                 await addDoc(collection(db, "rentals"), rental);
                 rentalForm.reset();
-                alert("Rental request submitted!");
+                alert("Rental request submitted successfully! Wait for Admin confirmation.");
             } catch (error) {
                 console.error("Error requesting rental:", error);
             }
@@ -572,7 +611,6 @@
 
         // (Customer) Listen for *only* their own rentals
         function listenForMyRentals() {
-            // Collection name changed to 'rentals', field changed to 'customerId'
             const q = query(collection(db, "rentals"), where("customerId", "==", userId));
             
             unsubscribeRentals = onSnapshot(q, (snapshot) => {
@@ -595,35 +633,49 @@
             myRentalsEmpty.classList.add('hidden');
             rentals.forEach(r => {
                 const li = document.createElement('li');
-                li.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-md';
-                const statusClass = r.status === 'Requested' ? 'text-yellow-600' : 
-                                     r.status === 'Confirmed' ? 'text-green-600' : 
-                                     'text-red-600';
+                const statusClass = r.status === 'Requested' ? 'bg-yellow-100 text-yellow-700' : 
+                                     r.status === 'Confirmed' ? 'bg-green-100 text-green-700' : 
+                                     'bg-red-100 text-red-700';
+
+                li.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg border-l-4 border-primary-blue shadow-sm';
                 li.innerHTML = `
-                    <div>
-                        <p class="font-medium text-gray-900">${r.bikeModel} <span class="text-sm font-normal text-gray-600">(₹${r.rentalRate}/Day)</span></p>
+                    <div class="flex-grow">
+                        <p class="font-semibold text-gray-900">${r.bikeModel}</p>
                         <p class="text-sm text-gray-700">From: ${r.startDate} to ${r.endDate}</p>
-                        <p class="text-sm font-medium ${statusClass}">Status: ${r.status}</p>
+                        <span class="text-xs font-medium px-2 py-1 rounded ${statusClass} inline-block mt-2">Status: ${r.status}</span>
                     </div>
-                    <button data-id="${r.id}" class="cancel-rental-btn bg-red-100 text-red-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-red-200">Cancel</button>
+                    <div class="flex-shrink-0 ml-4">
+                        <p class="font-bold text-lg text-primary-blue">₹${r.rentalRate}/Day</p>
+                        ${r.status !== 'Cancelled' ? `<button data-id="${r.id}" class="cancel-rental-btn bg-red-500 text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-red-600 mt-2 transition duration-150 ease-in-out">Cancel</button>` : ''}
+                    </div>
                 `;
                 myRentalsList.appendChild(li);
-            });
-            // Attach event listener for cancelling rental
-            myRentalsList.querySelectorAll('.cancel-rental-btn').forEach(button => {
-                button.addEventListener('click', (e) => cancelRental(e.target.dataset.id));
             });
         }
 
         // (Admin) Listen for *all* rentals
         function listenForAllRentals() {
-            // Collection name changed to 'rentals'
             const q = query(collection(db, "rentals"));
 
-            unsubscribeRentals = onSnapshot(q, (snapshot) => {
+            unsubscribeRentals = onSnapshot(q, async (snapshot) => {
                 const rentals = [];
                 snapshot.forEach(doc => rentals.push({ id: doc.id, ...doc.data() }));
-                renderAllRentals(rentals);
+                
+                // Fetch all user emails for admin view
+                const rentalsWithEmails = await Promise.all(rentals.map(async (r) => {
+                    let email = r.customerId; // Default to ID
+                    try {
+                        // NOTE: Getting user email from auth outside of a cloud function is complex/expensive.
+                        // In a real app, you'd store the email in the 'users' doc on register or use a CF.
+                        // For simplicity, we'll try to fetch the 'users' doc (which doesn't contain email in this simple setup)
+                        // and stick to showing the Customer ID.
+                    } catch (e) {
+                        console.warn("Could not fetch user email for rental:", r.id, e);
+                    }
+                    return { ...r, customerEmailOrId: email };
+                }));
+
+                renderAllRentals(rentalsWithEmails);
             }, (error) => {
                 console.error("Error listening for all rentals:", error);
             });
@@ -640,15 +692,27 @@
             allRentalsEmpty.classList.add('hidden');
             rentals.forEach(r => {
                 const li = document.createElement('li');
-                li.className = 'p-3 bg-gray-50 rounded-md';
+                li.className = 'p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm';
                 const isConfirmed = r.status === 'Confirmed';
+                const isCancelled = r.status === 'Cancelled';
+                
+                const statusClass = isConfirmed ? 'bg-green-100 text-green-700' : 
+                                    isCancelled ? 'bg-red-100 text-red-700' :
+                                    'bg-yellow-100 text-yellow-700';
+
                 li.innerHTML = `
-                    <p class="font-medium text-gray-900">${r.bikeModel} <span class="text-sm font-normal text-gray-600">(₹${r.rentalRate}/Day)</span></p>
-                    <p class="text-sm text-gray-700">Period: ${r.startDate} to ${r.endDate}</p>
-                    <p class="text-xs text-gray-500 break-all pt-1">Customer ID: ${r.customerId}</p>
-                    <div class="flex items-center space-x-2 mt-3">
-                        ${!isConfirmed && r.status !== 'Cancelled' ? `<button data-id="${r.id}" class="confirm-rental-btn bg-green-100 text-green-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-green-200">Confirm</button>` : `<span class="px-3 py-1 rounded-md text-sm font-medium ${isConfirmed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}">${r.status}</span>`}
-                        <button data-id="${r.id}" class="cancel-rental-btn bg-red-100 text-red-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-red-200">Cancel</button>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold text-gray-900 text-lg">${r.bikeModel} <span class="text-sm text-primary-indigo font-medium">(₹${r.rentalRate}/Day)</span></p>
+                            <p class="text-sm text-gray-700 mt-1">Period: ${r.startDate} to ${r.endDate}</p>
+                            <p class="text-xs text-gray-500 break-all pt-1">Customer ID: ${r.customerId.substring(0, 8)}...</p>
+                        </div>
+                        <span class="text-sm font-medium px-2 py-1 rounded ${statusClass} whitespace-nowrap">${r.status}</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2 mt-3 pt-3 border-t">
+                        ${!isConfirmed && !isCancelled ? `<button data-id="${r.id}" class="confirm-rental-btn bg-primary-indigo text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-150 ease-in-out">Confirm Rental</button>` : ''}
+                        ${!isCancelled ? `<button data-id="${r.id}" class="cancel-rental-btn bg-red-500 text-white px-3 py-1 rounded-md text-sm font-medium hover:bg-red-600 transition duration-150 ease-in-out">Cancel</button>` : ''}
                     </div>
                 `;
                 allRentalsList.appendChild(li);
@@ -657,10 +721,8 @@
 
         // (Customer or Admin) Cancel a rental
         async function cancelRental(id) {
-            // Logic changed to set status to 'Cancelled' instead of outright deletion
             if (confirm("Are you sure you want to cancel this rental?")) {
                 try {
-                    // Update status in 'rentals' collection
                     await setDoc(doc(db, "rentals", id), { status: 'Cancelled' }, { merge: true });
                 } catch (error) {
                     console.error("Error canceling rental:", error);
@@ -671,7 +733,6 @@
         // (Admin) Confirm a rental
         async function confirmRental(id) {
             try {
-                // Update status in 'rentals' collection
                 await setDoc(doc(db, "rentals", id), { status: 'Confirmed' }, { merge: true });
             } catch (error) {
                 console.error("Error confirming rental:", error);
@@ -680,20 +741,25 @@
 
         // --- EVENT LISTENERS ---
         
-        // Auth Listeners (Unchanged)
+        // Auth Listeners
         loginForm.addEventListener('submit', handleLogin);
         registerForm.addEventListener('submit', handleRegister);
         signOutBtn.addEventListener('click', handleSignOut);
         
-        // Customer Listeners (Renamed)
+        // Customer Listeners
         rentalForm.addEventListener('submit', requestRental);
-        // Event delegation for my rentals is now handled in renderMyRentals for simplicity
-        
-        // Admin Listeners (Renamed)
+        // Event delegation for my rentals
+        myRentalsList.addEventListener('click', (e) => {
+             if (e.target.classList.contains('cancel-rental-btn')) {
+                cancelRental(e.target.dataset.id);
+             }
+        });
+
+        // Admin Listeners
         addBikeForm.addEventListener('submit', addBike);
         adminBikeList.addEventListener('click', (e) => {
              if (e.target.classList.contains('remove-bike-btn')) {
-                removeBike(e);
+                 removeBike(e);
              }
         });
 
