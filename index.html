@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Rental System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto max-w-4xl p-4 sm:p-8">
+        
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-center text-blue-600">Bike Rental Portal</h1>
+            <p class="text-center text-gray-500 mt-2">Powered by Firebase & Deployed on Azure</p>
+        </header>
+
+        <div id="login-register-view" class="max-w-md mx-auto">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                
+                <form id="login-form">
+                    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
+                    <div id="auth-error" class="hidden text-red-600 bg-red-100 p-3 rounded-md mb-4 text-sm"></div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="login-email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="login-email" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" id="login-password" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">Login</button>
+                    </div>
+                    <p class="text-center text-sm text-gray-600 mt-4">
+                        Don't have an account? 
+                        <a href="#" id="show-register-form" class="font-medium text-blue-600 hover:text-blue-500">Register here</a>
+                    </p>
+                </form>
+
+                <form id="register-form" class="hidden">
+                    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Register</h2>
+                    <div id="register-error" class="hidden text-red-600 bg-red-100 p-3 rounded-md mb-4 text-sm"></div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="register-email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="register-email" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <div>
+                            <label for="register-password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" id="register-password" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 font-medium">Create Account</button>
+                    </div>
+                     <p class="text-center text-sm text-gray-600 mt-4">
+                        Already have an account? 
+                        <a href="#" id="show-login-form" class="font-medium text-blue-600 hover:text-blue-500">Login here</a>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+
+        <div id="app-content" class="hidden">
+            <div id="user-info" class="text-center mb-6 p-4 bg-white rounded-lg shadow-sm">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p id="auth-status" class="text-lg text-green-600 font-medium">Backend Connected</p>
+                        <p id="user-role" class="text-sm text-indigo-600 font-semibold"></p>
+                    </div>
+                    <button id="sign-out-btn" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 font-medium text-sm">Sign Out</button>
+                </div>
+                 <p id="user-id" class="text-xs text-gray-400 break-all mt-2 text-left"></p>
+            </div>
+
+            <div id="loading-view" class="text-center p-10 bg-white rounded-lg shadow">
+                <svg class="animate-spin h-10 w-10 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="mt-3 text-gray-500">Checking user role...</p>
+            </div>
+
+            <div id="customer-view" class="hidden space-y-8">
+                
+                <section class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Rent a Bike</h2>
+                    <form id="rental-form" class="space-y-4">
+                        <div>
+                            <label for="bike-select" class="block text-sm font-medium text-gray-700">Bike Model</label>
+                            <select id="bike-select" name="bike-select" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="">Select a bike...</option>
+                                </select>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="rental-start-date" class="block text-sm font-medium text-gray-700">Start Date</label>
+                                <input type="date" id="rental-start-date" name="rental-start-date" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+                            <div>
+                                <label for="rental-end-date" class="block text-sm font-medium text-gray-700">End Date</label>
+                                <input type="date" id="rental-end-date" name="rental-end-date" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">Request Rental</button>
+                    </form>
+                </section>
+
+                <section class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">My Rentals</h2>
+                    <ul id="my-rentals-list" class="space-y-3">
+                        <li id="my-rentals-empty" class="text-center text-gray-500 py-4">You have no active rentals.</li>
+                    </ul>
+                </section>
+
+            </div>
+
+            <div id="admin-view" class="hidden space-y-8">
+
+                <section class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Manage Bike Inventory</h2>
+                    <form id="add-bike-form" class="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 mb-6">
+                        <input type="text" id="bike-model" class="flex-grow border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Bike Model (e.g., Honda Activa)" required>
+                        <input type="number" id="bike-rate" class="flex-grow border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Rental Rate (₹/Day)" required>
+                        <button type="submit" class="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 font-medium">Add Bike</button>
+                    </form>
+                    
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3">Current Bikes</h3>
+                    <ul id="admin-bike-list" class="space-y-3">
+                        <li id="admin-bikes-empty" class="text-center text-gray-500 py-4">No bikes found. Add one above.</li>
+                    </ul>
+                </section>
+
+                <section class="bg-white p-6 rounded-lg shadow">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">All Rental Requests</h2>
+                    <ul id="all-rentals-list" class="space-y-3">
+                        <li id="all-rentals-empty" class="text-center text-gray-500 py-4">There are no rental requests.</li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Copy this from your Firebase project settings
+        // IMPORTANT: REPLACE with your ACTUAL Firebase config
+        const firebaseConfig = {
+  apiKey: "AIzaSyCzg_7yjmg956Dnd_ZaXsv7YRW8qdzLIjA",
+  authDomain: "cloudbike-7b44b.firebaseapp.com",
+  projectId: "cloudbike-7b44b",
+  storageBucket: "cloudbike-7b44b.firebasestorage.app",
+  messagingSenderId: "496112498753",
+  appId: "1:496112498753:web:8251f1b4c8e81924e4eec0",
+  measurementId: "G-PR3S4LG81J"
+};
+
+    </script>
+
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            getDoc,
+            addDoc, 
+            setDoc, 
+            deleteDoc, 
+            onSnapshot, 
+            collection, 
+            query,
+            where,
+            setLogLevel
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- UI ELEMENTS ---
+        const loginRegisterView = document.getElementById('login-register-view');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegisterFormBtn = document.getElementById('show-register-form');
+        const showLoginFormBtn = document.getElementById('show-login-form');
+        const authErrorEl = document.getElementById('auth-error');
+        const registerErrorEl = document.getElementById('register-error');
+
+        const appContent = document.getElementById('app-content');
+        const signOutBtn = document.getElementById('sign-out-btn');
+        const authStatusEl = document.getElementById('auth-status');
+        const userIdEl = document.getElementById('user-id');
+        const userRoleEl = document.getElementById('user-role');
+        const loadingView = document.getElementById('loading-view');
+        // Renamed from patientView
+        const customerView = document.getElementById('customer-view'); 
+        const adminView = document.getElementById('admin-view');
+
+        // Customer View Elements (Renamed)
+        const rentalForm = document.getElementById('rental-form');
+        const bikeSelect = document.getElementById('bike-select');
+        const rentalStartDate = document.getElementById('rental-start-date');
+        const rentalEndDate = document.getElementById('rental-end-date');
+        const myRentalsList = document.getElementById('my-rentals-list');
+        const myRentalsEmpty = document.getElementById('my-rentals-empty');
+
+        // Admin View Elements (Renamed)
+        const addBikeForm = document.getElementById('add-bike-form');
+        const bikeModelInput = document.getElementById('bike-model');
+        const bikeRateInput = document.getElementById('bike-rate');
+        const adminBikeList = document.getElementById('admin-bike-list');
+        const adminBikesEmpty = document.getElementById('admin-bikes-empty');
+        const allRentalsList = document.getElementById('all-rentals-list');
+        const allRentalsEmpty = document.getElementById('all-rentals-empty');
+
+        // --- FIREBASE & APP STATE ---
+        let app, auth, db;
+        let userId;
+        let userRole = 'customer'; // Default role (renamed from 'patient')
+        let unsubscribeBikes = null; // Renamed from 'unsubscribeDoctors'
+        let unsubscribeRentals = null; // Renamed from 'unsubscribeAppointments'
+
+        // --- FIREBASE INITIALIZATION & AUTH ---
+
+        async function initializeFirebase() {
+            if (!firebaseConfig || !firebaseConfig.apiKey || firebaseConfig.apiKey === "YOUR_API_KEY") {
+                console.error("Firebase config is not set. Please paste your config object in index.html.");
+                authErrorEl.textContent = 'Error: Firebase config missing. Please paste your config object from the Firebase console.';
+                authErrorEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                setLogLevel('Debug'); 
+
+                console.log("Firebase initialized. Waiting for auth state change...");
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        // USER IS LOGGED IN
+                        userId = user.uid;
+                        console.log("User is authenticated:", userId);
+
+                        // Show app, hide login
+                        loginRegisterView.classList.add('hidden');
+                        appContent.classList.remove('hidden');
+                        loadingView.classList.remove('hidden'); // Show loader while checking role
+                        customerView.classList.add('hidden'); // Use new ID
+                        adminView.classList.add('hidden');
+
+                        authStatusEl.textContent = 'Backend Connected';
+                        authStatusEl.classList.add('text-green-600');
+                        userIdEl.textContent = `User ID: ${userId}`;
+
+                        // Check the user's role
+                        await checkUserRole(userId);
+                        
+                        // Show the correct UI
+                        setupUIBasedOnRole();
+
+                    } else {
+                        // USER IS LOGGED OUT
+                        console.log("User is not authenticated.");
+                        
+                        // Show login, hide app
+                        loginRegisterView.classList.remove('hidden');
+                        appContent.classList.add('hidden');
+                        loadingView.classList.add('hidden');
+                        
+                        userId = null;
+                        userRole = 'customer'; // Default role
+                        cleanupListeners();
+                    }
+                });
+
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+                authErrorEl.textContent = 'Error connecting to backend. Check console.';
+                authErrorEl.classList.remove('hidden');
+            }
+        }
+
+        // --- AUTH HANDLERS (Login, Register, Logout) ---
+        // (Unchanged logic, just using new element IDs for forms)
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = loginForm['login-email'].value;
+            const password = loginForm['login-password'].value;
+
+            try {
+                authErrorEl.classList.add('hidden');
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged will handle the rest
+            } catch (error) {
+                console.error("Login Error:", error.message);
+                authErrorEl.textContent = getFriendlyAuthError(error.code);
+                authErrorEl.classList.remove('hidden');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const email = registerForm['register-email'].value;
+            const password = registerForm['register-password'].value;
+
+            try {
+                registerErrorEl.classList.add('hidden');
+                // 1. Create user in Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                // 2. Create their role document in Firestore
+                // New users default to 'customer'
+                const userDocRef = doc(db, "users", user.uid);
+                await setDoc(userDocRef, { role: 'customer' }); // Changed from 'patient'
+                
+                // onAuthStateChanged will handle the rest
+            } catch (error) {
+                console.error("Register Error:", error.message);
+                registerErrorEl.textContent = getFriendlyAuthError(error.code);
+                registerErrorEl.classList.remove('hidden');
+            }
+        }
+
+        async function handleSignOut() {
+            await signOut(auth);
+            // onAuthStateChanged will handle the rest
+        }
+
+        function getFriendlyAuthError(code) {
+            switch (code) {
+                case 'auth/invalid-email':
+                    return 'Please enter a valid email address.';
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                case 'auth/invalid-credential':
+                    return 'Invalid email or password.';
+                case 'auth/email-already-in-use':
+                    return 'This email address is already registered.';
+                case 'auth/weak-password':
+                    return 'Password should be at least 6 characters long.';
+                default:
+                    return 'An unknown error occurred. Please try again.';
+            }
+        }
+
+        // Toggle between Login and Register forms
+        showRegisterFormBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+        });
+
+        showLoginFormBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+
+
+        // --- ROLE-BASED UI & DATA ---
+
+        async function checkUserRole(uid) {
+            try {
+                const userDocRef = doc(db, "users", uid);
+                const userDoc = await getDoc(userDocRef);
+
+                if (userDoc.exists() && userDoc.data().role === 'admin') {
+                    userRole = 'admin';
+                    console.log("User role is: ADMIN");
+                } else {
+                    userRole = 'customer'; // Changed from 'patient'
+                    console.log("User role is: CUSTOMER");
+                }
+                userRoleEl.textContent = `You are logged in as: ${userRole.toUpperCase()}`;
+            } catch (error) {
+                console.error("Error checking user role:", error);
+                userRole = 'customer'; // Default to customer on error
+                userRoleEl.textContent = 'Role: Customer (default)';
+            }
+        }
+
+        function setupUIBasedOnRole() {
+            loadingView.classList.add('hidden');
+            cleanupListeners(); // Clear any old listeners
+
+            if (userRole === 'admin') {
+                // Admin Setup
+                adminView.classList.remove('hidden');
+                customerView.classList.add('hidden');
+                
+                listenForBikes(true); // true = admin mode
+                listenForAllRentals();
+
+            } else {
+                // Customer Setup (Renamed from Patient Setup)
+                customerView.classList.remove('hidden');
+                adminView.classList.add('hidden');
+                
+                listenForBikes(false); // false = customer mode
+                listenForMyRentals();
+            }
+        }
+
+        function cleanupListeners() {
+            if (unsubscribeBikes) unsubscribeBikes();
+            if (unsubscribeRentals) unsubscribeRentals();
+        }
+
+        // --- BIKE INVENTORY MANAGEMENT (Admin & Customer) ---
+        // (Replaced Doctor logic)
+
+        function listenForBikes(isAdmin) {
+            // Collection name changed to 'bikes'
+            const bikesCollection = collection(db, "bikes");
+            
+            // Renamed unsubscribe variable
+            unsubscribeBikes = onSnapshot(bikesCollection, (snapshot) => {
+                const bikes = [];
+                snapshot.forEach(doc => bikes.push({ id: doc.id, ...doc.data() }));
+                
+                if (isAdmin) {
+                    renderAdminBikeList(bikes);
+                } else {
+                    renderCustomerBikeOptions(bikes);
+                }
+            }, (error) => {
+                console.error("Error listening for bikes:", error);
+            });
+        }
+
+        // (Admin) Render bike list with delete buttons
+        function renderAdminBikeList(bikes) {
+            adminBikeList.innerHTML = '';
+            if (bikes.length === 0) {
+                adminBikesEmpty.classList.remove('hidden');
+                return;
+            }
+            
+            adminBikesEmpty.classList.add('hidden');
+            bikes.forEach(bike => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-md';
+                li.innerHTML = `
+                    <div>
+                        <span class="font-medium text-gray-900">${bike.model}</span>
+                        <span class="text-sm text-gray-600 ml-2">(₹${bike.rate}/Day)</span>
+                    </div>
+                    <button data-id="${bike.id}" class="remove-bike-btn bg-red-100 text-red-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-red-200">Remove</button>
+                `;
+                adminBikeList.appendChild(li);
+            });
+            // Attach event listener for removing bike
+            adminBikeList.querySelectorAll('.remove-bike-btn').forEach(button => {
+                button.addEventListener('click', removeBike);
+            });
+        }
+
+        // (Customer) Render bike <option> tags for the select dropdown
+        function renderCustomerBikeOptions(bikes) {
+            bikeSelect.innerHTML = '<option value="">Select a bike...</option>'; // Reset
+            bikes.forEach(bike => {
+                const option = document.createElement('option');
+                option.value = bike.id;
+                option.textContent = `${bike.model} (₹${bike.rate}/Day)`;
+                option.dataset.model = bike.model; // Store model for later
+                option.dataset.rate = bike.rate; // Store rate for later
+                bikeSelect.appendChild(option);
+            });
+        }
+
+        // (Admin) Add a new bike
+        async function addBike(e) {
+            e.preventDefault();
+            const model = bikeModelInput.value.trim();
+            const rate = parseFloat(bikeRateInput.value);
+
+            if (model && !isNaN(rate) && rate > 0) {
+                try {
+                    // Collection name changed to 'bikes'
+                    await addDoc(collection(db, "bikes"), { model, rate, available: true });
+                    bikeModelInput.value = '';
+                    bikeRateInput.value = '';
+                } catch (error) {
+                    console.error("Error adding bike:", error);
+                }
+            } else {
+                alert("Please enter a valid model and rental rate.");
+            }
+        }
+
+        // (Admin) Remove a bike
+        async function removeBike(e) {
+            if (!e.target.classList.contains('remove-bike-btn')) return;
+            
+            const id = e.target.dataset.id;
+            if (confirm("Are you sure you want to remove this bike from inventory?")) {
+                try {
+                    // Collection name changed to 'bikes'
+                    await deleteDoc(doc(db, "bikes", id));
+                } catch (error) {
+                    console.error("Error removing bike:", error);
+                }
+            }
+        }
+
+        // --- RENTAL MANAGEMENT ---
+        // (Replaced Appointment logic)
+
+        // (Customer) Request a new rental
+        async function requestRental(e) {
+            e.preventDefault();
+            const selectedOption = bikeSelect.options[bikeSelect.selectedIndex];
+            
+            if (!selectedOption.value) {
+                alert("Please select a bike model.");
+                return;
+            }
+
+            const rental = {
+                customerId: userId, // Changed from patientId
+                bikeId: selectedOption.value,
+                bikeModel: selectedOption.dataset.model,
+                rentalRate: parseFloat(selectedOption.dataset.rate), // Store rate
+                startDate: rentalStartDate.value,
+                endDate: rentalEndDate.value,
+                status: 'Requested' // Changed from 'Pending'
+            };
+
+            // Basic Date Validation
+            if (rental.startDate >= rental.endDate) {
+                alert("End date must be after start date.");
+                return;
+            }
+
+            try {
+                // Collection name changed to 'rentals'
+                await addDoc(collection(db, "rentals"), rental);
+                rentalForm.reset();
+                alert("Rental request submitted!");
+            } catch (error) {
+                console.error("Error requesting rental:", error);
+            }
+        }
+
+        // (Customer) Listen for *only* their own rentals
+        function listenForMyRentals() {
+            // Collection name changed to 'rentals', field changed to 'customerId'
+            const q = query(collection(db, "rentals"), where("customerId", "==", userId));
+            
+            unsubscribeRentals = onSnapshot(q, (snapshot) => {
+                const rentals = [];
+                snapshot.forEach(doc => rentals.push({ id: doc.id, ...doc.data() }));
+                renderMyRentals(rentals);
+            }, (error) => {
+                console.error("Error listening for my rentals:", error);
+            });
+        }
+
+        // (Customer) Render their list of rentals
+        function renderMyRentals(rentals) {
+            myRentalsList.innerHTML = '';
+            if (rentals.length === 0) {
+                myRentalsEmpty.classList.remove('hidden');
+                return;
+            }
+
+            myRentalsEmpty.classList.add('hidden');
+            rentals.forEach(r => {
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-md';
+                const statusClass = r.status === 'Requested' ? 'text-yellow-600' : 
+                                     r.status === 'Confirmed' ? 'text-green-600' : 
+                                     'text-red-600';
+                li.innerHTML = `
+                    <div>
+                        <p class="font-medium text-gray-900">${r.bikeModel} <span class="text-sm font-normal text-gray-600">(₹${r.rentalRate}/Day)</span></p>
+                        <p class="text-sm text-gray-700">From: ${r.startDate} to ${r.endDate}</p>
+                        <p class="text-sm font-medium ${statusClass}">Status: ${r.status}</p>
+                    </div>
+                    <button data-id="${r.id}" class="cancel-rental-btn bg-red-100 text-red-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-red-200">Cancel</button>
+                `;
+                myRentalsList.appendChild(li);
+            });
+            // Attach event listener for cancelling rental
+            myRentalsList.querySelectorAll('.cancel-rental-btn').forEach(button => {
+                button.addEventListener('click', (e) => cancelRental(e.target.dataset.id));
+            });
+        }
+
+        // (Admin) Listen for *all* rentals
+        function listenForAllRentals() {
+            // Collection name changed to 'rentals'
+            const q = query(collection(db, "rentals"));
+
+            unsubscribeRentals = onSnapshot(q, (snapshot) => {
+                const rentals = [];
+                snapshot.forEach(doc => rentals.push({ id: doc.id, ...doc.data() }));
+                renderAllRentals(rentals);
+            }, (error) => {
+                console.error("Error listening for all rentals:", error);
+            });
+        }
+
+        // (Admin) Render all rentals
+        function renderAllRentals(rentals) {
+            allRentalsList.innerHTML = '';
+            if (rentals.length === 0) {
+                allRentalsEmpty.classList.remove('hidden');
+                return;
+            }
+
+            allRentalsEmpty.classList.add('hidden');
+            rentals.forEach(r => {
+                const li = document.createElement('li');
+                li.className = 'p-3 bg-gray-50 rounded-md';
+                const isConfirmed = r.status === 'Confirmed';
+                li.innerHTML = `
+                    <p class="font-medium text-gray-900">${r.bikeModel} <span class="text-sm font-normal text-gray-600">(₹${r.rentalRate}/Day)</span></p>
+                    <p class="text-sm text-gray-700">Period: ${r.startDate} to ${r.endDate}</p>
+                    <p class="text-xs text-gray-500 break-all pt-1">Customer ID: ${r.customerId}</p>
+                    <div class="flex items-center space-x-2 mt-3">
+                        ${!isConfirmed && r.status !== 'Cancelled' ? `<button data-id="${r.id}" class="confirm-rental-btn bg-green-100 text-green-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-green-200">Confirm</button>` : `<span class="px-3 py-1 rounded-md text-sm font-medium ${isConfirmed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}">${r.status}</span>`}
+                        <button data-id="${r.id}" class="cancel-rental-btn bg-red-100 text-red-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-red-200">Cancel</button>
+                    </div>
+                `;
+                allRentalsList.appendChild(li);
+            });
+        }
+
+        // (Customer or Admin) Cancel a rental
+        async function cancelRental(id) {
+            // Logic changed to set status to 'Cancelled' instead of outright deletion
+            if (confirm("Are you sure you want to cancel this rental?")) {
+                try {
+                    // Update status in 'rentals' collection
+                    await setDoc(doc(db, "rentals", id), { status: 'Cancelled' }, { merge: true });
+                } catch (error) {
+                    console.error("Error canceling rental:", error);
+                }
+            }
+        }
+        
+        // (Admin) Confirm a rental
+        async function confirmRental(id) {
+            try {
+                // Update status in 'rentals' collection
+                await setDoc(doc(db, "rentals", id), { status: 'Confirmed' }, { merge: true });
+            } catch (error) {
+                console.error("Error confirming rental:", error);
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        
+        // Auth Listeners (Unchanged)
+        loginForm.addEventListener('submit', handleLogin);
+        registerForm.addEventListener('submit', handleRegister);
+        signOutBtn.addEventListener('click', handleSignOut);
+        
+        // Customer Listeners (Renamed)
+        rentalForm.addEventListener('submit', requestRental);
+        // Event delegation for my rentals is now handled in renderMyRentals for simplicity
+        
+        // Admin Listeners (Renamed)
+        addBikeForm.addEventListener('submit', addBike);
+        adminBikeList.addEventListener('click', (e) => {
+             if (e.target.classList.contains('remove-bike-btn')) {
+                removeBike(e);
+             }
+        });
+
+        allRentalsList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('cancel-rental-btn')) {
+                cancelRental(e.target.dataset.id);
+            }
+            if (e.target.classList.contains('confirm-rental-btn')) {
+                confirmRental(e.target.dataset.id);
+            }
+        });
+
+        // --- START THE APP ---
+        initializeFirebase();
+
+    </script>
+</body>
+</html>
